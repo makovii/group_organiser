@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/makovii/group_organiser/server"
+	"fmt"
 )
 
 func main() {
-	server.Init()
+	fmt.Println("Aloha maestro")
 }
