@@ -12,7 +12,5 @@ func Init() {
 	cfg := config.GetConfig()
 
 	err := router.Run(fmt.Sprintf("%s:%d", cfg.Server.Host, cfg.Server.Port))
-	if err != nil {
-		return 
-	}
+	if err != nil {}
  }
