@@ -3,14 +3,16 @@ package cotroller
 import (
 	"net/http"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 
 type UserController struct {
+	DB *gorm.DB
 }
 
-func NewUserController() *UserController {
-	return &UserController{}
+func NewUserController(db *gorm.DB) *UserController {
+	return &UserController{ DB: db }
 }
 
 func (u UserController) GetUser(c *gin.Context) {
