@@ -5,17 +5,25 @@ import (
 	"github.com/makovii/group_organiser/controller"
 	database "github.com/makovii/group_organiser/db"
 	"github.com/makovii/group_organiser/middleware"
+	"github.com/makovii/group_organiser/config"
 )
 
 func NewRouter() *gin.Engine {
 	router := gin.New()
 	router.Use(gin.Recovery())
 
+	cfg := config.GetConfig()
 	db := database.ConnectDatabase()
+
+	auth := controller.NewAuthController(db, cfg)
+	authGroup := router.Group("auth")
+	authGroup.POST("/signIn", auth.SignIn)
+	authGroup.POST("/signUp", auth.SignUp)
+
 
 	user := controller.NewUserController(db)
 	userGroup := router.Group("user")
-	userGroup.Use(middleware.AuthMiddleware())
+	userGroup.Use(middleware.IsAuthorized(cfg))
 	userGroup.GET("/getUser", user.GetUser)
 	userGroup.GET("/myNotifications", user.MyNotifications)
 	userGroup.POST("/joinTeam", user.JoinTeam)
@@ -25,7 +33,7 @@ func NewRouter() *gin.Engine {
 
 	manager := controller.NewManagerController(db)
 	managerGroup := router.Group("manager")
-	managerGroup.Use(middleware.AuthMiddleware())
+	managerGroup.Use(middleware.IsAuthorized(cfg))
 	managerGroup.POST("/createTeam", manager.CreateTeam)
 	managerGroup.GET("/getAllteams", manager.GetAllTeams)
 	managerGroup.GET("/getTeam", manager.GetTeam)
@@ -34,7 +42,7 @@ func NewRouter() *gin.Engine {
 
 	admin := controller.NewAdminController(db)
 	adminGroup := router.Group("admin")
-	adminGroup.Use(middleware.AuthMiddleware())
+	adminGroup.Use(middleware.IsAuthorized(cfg))
 	adminGroup.GET("/getAdmin", admin.GetAdmin)
 	adminGroup.GET("/getAdminById", admin.GetById)
 	adminGroup.POST("/banById", admin.BanById)
