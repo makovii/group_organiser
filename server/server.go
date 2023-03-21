@@ -11,5 +11,8 @@ func Init() {
 
 	cfg := config.GetConfig()
 
-	router.Run(fmt.Sprintf("%s:%d", cfg.Server.Host, cfg.Server.Port))
+	err := router.Run(fmt.Sprintf("%s:%d", cfg.Server.Host, cfg.Server.Port))
+	if err != nil {
+		fmt.Println("Smth wrong witn router.Run function: ", err)
+	}
 }

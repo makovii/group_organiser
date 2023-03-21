@@ -32,5 +32,13 @@ func NewRouter() *gin.Engine {
 	managerGroup.PUT("/updateTeam", manager.UpdateTeam)
 	managerGroup.DELETE("/deleteTeam", manager.DeleteTeam)
 
+	admin := controller.NewAdminController(db)
+	adminGroup := router.Group("admin")
+	adminGroup.Use(middleware.AuthMiddleware())
+	adminGroup.GET("/getAdmin", admin.GetAdmin)
+	adminGroup.GET("/getAdminById", admin.GetById)
+	adminGroup.POST("/banById", admin.BanById)
+	adminGroup.POST("/getTeams", admin.GetTeams)
+
 	return router
 }
