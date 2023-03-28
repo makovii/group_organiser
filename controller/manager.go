@@ -16,7 +16,7 @@ func NewManagerController(db *gorm.DB) *ManagerController {
 	return &ManagerController{DB: db}
 }
 
-func (m ManagerController) CreateTeam(c *gin.Context) {
+func (m *ManagerController) CreateTeam(c *gin.Context) {
 	var team database.Team
 	if err := c.ShouldBindJSON(&team); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -31,7 +31,7 @@ func (m ManagerController) CreateTeam(c *gin.Context) {
 	c.JSON(http.StatusCreated, team)
 }
 
-func (m ManagerController) GetAllTeams(c *gin.Context) {
+func (m *ManagerController) GetAllTeams(c *gin.Context) {
 	var teams []database.Team
 	if err := m.DB.Find(&teams).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -41,7 +41,7 @@ func (m ManagerController) GetAllTeams(c *gin.Context) {
 	c.JSON(http.StatusOK, teams)
 }
 
-func (m ManagerController) GetTeam(c *gin.Context) {
+func (m *ManagerController) GetTeam(c *gin.Context) {
 	id := c.Param("id")
 
 	var team database.Team

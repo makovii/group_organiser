@@ -16,7 +16,7 @@ func NewUserController(db *gorm.DB) *UserController {
 	return &UserController{DB: db}
 }
 
-func (u UserController) GetUser(c *gin.Context) {
+func (u *UserController) GetUser(c *gin.Context) {
 	var user database.Player
 	user.Id = 1
 	user.Email = "someemail@gmail.com"
@@ -25,14 +25,13 @@ func (u UserController) GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-func (u UserController) MyNotifications(c *gin.Context) {
+func (u *UserController) MyNotifications(c *gin.Context) {
 	var user database.Player
-	//user.Notification = []string{"1", "2"}
 	MyNotif := user.Notification
 	c.JSON(http.StatusOK, MyNotif)
 }
 
-func (u UserController) JoinTeam(c *gin.Context) {
+func (u *UserController) JoinTeam(c *gin.Context) {
 	var req database.Request
 	req.Id = 1
 	req.From = 24242
@@ -42,7 +41,7 @@ func (u UserController) JoinTeam(c *gin.Context) {
 	c.JSON(http.StatusOK, req)
 }
 
-func (u UserController) LeaveTeam(c *gin.Context) {
+func (u *UserController) LeaveTeam(c *gin.Context) {
 	var req database.Request
 	req.Id = 1
 	req.From = 24242
@@ -53,7 +52,7 @@ func (u UserController) LeaveTeam(c *gin.Context) {
 	c.JSON(http.StatusOK, req)
 }
 
-func (u UserController) CancelRequest(c *gin.Context) {
+func (u *UserController) CancelRequest(c *gin.Context) {
 	var req database.Request
 	req.Id = 1
 	req.From = 24242
@@ -64,7 +63,7 @@ func (u UserController) CancelRequest(c *gin.Context) {
 	c.JSON(http.StatusOK, req)
 }
 
-func (u UserController) GetManagers(c *gin.Context) {
+func (u *UserController) GetManagers(c *gin.Context) {
 	var managers []database.Manager
 	c.JSON(http.StatusOK, managers)
 }
