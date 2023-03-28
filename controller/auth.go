@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
-	database "github.com/makovii/group_organiser/db"
+	"github.com/makovii/group_organiser/database"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"github.com/makovii/group_organiser/config"

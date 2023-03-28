@@ -3,7 +3,7 @@ package server
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/makovii/group_organiser/controller"
-	database "github.com/makovii/group_organiser/db"
+	"github.com/makovii/group_organiser/database"
 	"github.com/makovii/group_organiser/middleware"
 	"github.com/makovii/group_organiser/config"
 )

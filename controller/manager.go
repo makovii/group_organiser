@@ -5,25 +5,19 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	"github.com/makovii/group_organiser/database"
 )
 
 type ManagerController struct {
 	DB *gorm.DB
 }
 
-type Team struct {
-	gorm.Model
-	Name       string `json:"name"`
-	ManagerID  uint   `json:"manager_id"`
-	MembersIDs []uint `json:"members_ids"`
-}
-
 func NewManagerController(db *gorm.DB) *ManagerController {
 	return &ManagerController{DB: db}
 }
 
-func (m *ManagerController) CreateTeam(c *gin.Context) {
-	var team Team
+func (m ManagerController) CreateTeam(c *gin.Context) {
+	var team database.Team
 	if err := c.ShouldBindJSON(&team); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -37,8 +31,8 @@ func (m *ManagerController) CreateTeam(c *gin.Context) {
 	c.JSON(http.StatusCreated, team)
 }
 
-func (m *ManagerController) GetAllTeams(c *gin.Context) {
-	var teams []Team
+func (m ManagerController) GetAllTeams(c *gin.Context) {
+	var teams []database.Team
 	if err := m.DB.Find(&teams).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -47,10 +41,10 @@ func (m *ManagerController) GetAllTeams(c *gin.Context) {
 	c.JSON(http.StatusOK, teams)
 }
 
-func (m *ManagerController) GetTeam(c *gin.Context) {
+func (m ManagerController) GetTeam(c *gin.Context) {
 	id := c.Param("id")
 
-	var team Team
+	var team database.Team
 	if err := m.DB.Where("id = ?", id).First(&team).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "team not found"})
 		return
@@ -62,7 +56,7 @@ func (m *ManagerController) GetTeam(c *gin.Context) {
 func (m *ManagerController) UpdateTeam(c *gin.Context) {
 	id := c.Param("id")
 
-	var team Team
+	var team database.Team
 	if err := m.DB.Where("id = ?", id).First(&team).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "team not found"})
 		return
@@ -85,7 +79,7 @@ func (m *ManagerController) UpdateTeam(c *gin.Context) {
 func (m *ManagerController) DeleteTeam(c *gin.Context) {
 	id := c.Param("id")
 
-	var team Team
+	var team database.Team
 	if err := m.DB.Where("id = ?", id).First(&team).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "team not found"})
 		return

@@ -55,5 +55,15 @@ func ConnectDatabase() *gorm.DB {
 		return nil
 	}
 
+	err = database.AutoMigrate(&Team{})
+	if err != nil {
+		return nil
+	}
+
+	err = database.AutoMigrate(&Manager{})
+	if err != nil {
+		return nil
+	}
+
 	return database
 }

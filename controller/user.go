@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	"github.com/makovii/group_organiser/database"
 )
 
 type UserController struct {
@@ -16,31 +17,54 @@ func NewUserController(db *gorm.DB) *UserController {
 }
 
 func (u UserController) GetUser(c *gin.Context) {
-	user := "user1"
+	var user database.Player
+	user.Id = 1
+	user.Email = "someemail@gmail.com"
+	user.Name = "Bob"
+	user.Password = "42evev04vee9204vev02svvqvqev"
 	c.JSON(http.StatusOK, user)
 }
 
 func (u UserController) MyNotifications(c *gin.Context) {
-	MyNotifications := "MyNotifications"
-	c.JSON(http.StatusOK, MyNotifications)
+	var user database.Player
+	//user.Notification = []string{"1", "2"}
+	MyNotif := user.Notification
+	c.JSON(http.StatusOK, MyNotif)
 }
 
 func (u UserController) JoinTeam(c *gin.Context) {
-	JoinTeam := "useJoinTeamr1"
-	c.JSON(http.StatusOK, JoinTeam)
+	var req database.Request
+	req.Id = 1
+	req.From = 24242
+	req.StatusId = 1
+	req.To = 222
+	req.TypeId = 111
+	c.JSON(http.StatusOK, req)
 }
 
 func (u UserController) LeaveTeam(c *gin.Context) {
-	LeaveTeam := "LeaveTeam"
-	c.JSON(http.StatusOK, LeaveTeam)
+	var req database.Request
+	req.Id = 1
+	req.From = 24242
+	req.StatusId = 1
+	req.To = 222
+	req.TypeId = 222
+
+	c.JSON(http.StatusOK, req)
 }
 
 func (u UserController) CancelRequest(c *gin.Context) {
-	CancelRequest := "CancelRequest"
-	c.JSON(http.StatusOK, CancelRequest)
+	var req database.Request
+	req.Id = 1
+	req.From = 24242
+	req.StatusId = 1
+	req.To = 222
+	req.TypeId = 333
+
+	c.JSON(http.StatusOK, req)
 }
 
 func (u UserController) GetManagers(c *gin.Context) {
-	GetManagers := "GetManagers"
-	c.JSON(http.StatusOK, GetManagers)
+	var managers []database.Manager
+	c.JSON(http.StatusOK, managers)
 }
