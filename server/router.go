@@ -47,6 +47,8 @@ func NewRouter() *gin.Engine {
 	adminGroup.GET("/getAdminById", admin.GetById)
 	adminGroup.POST("/banById", admin.BanById)
 	adminGroup.POST("/getTeams", admin.GetTeams)
+	adminGroup.POST("/acceptRegistration", admin.AcceptManagerRegistration)
+
 
 	return router
 }

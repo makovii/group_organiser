@@ -17,7 +17,7 @@ func NewUserController(db *gorm.DB) *UserController {
 }
 
 func (u *UserController) GetUser(c *gin.Context) {
-	var user database.Player
+	var user database.User
 	user.Id = 1
 	user.Email = "someemail@gmail.com"
 	user.Name = "Bob"
@@ -26,9 +26,12 @@ func (u *UserController) GetUser(c *gin.Context) {
 }
 
 func (u *UserController) MyNotifications(c *gin.Context) {
-	var user database.Player
-	MyNotif := user.Notification
-	c.JSON(http.StatusOK, MyNotif)
+	var user database.User
+
+	var requests database.Request
+	u.DB.Where("to = ?", user.Id).Find(&requests)
+
+	c.JSON(http.StatusOK, requests)
 }
 
 func (u *UserController) JoinTeam(c *gin.Context) {
@@ -64,6 +67,6 @@ func (u *UserController) CancelRequest(c *gin.Context) {
 }
 
 func (u *UserController) GetManagers(c *gin.Context) {
-	var managers []database.Manager
+	var managers []database.User
 	c.JSON(http.StatusOK, managers)
 }

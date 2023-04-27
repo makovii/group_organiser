@@ -2,11 +2,16 @@ package controller
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"github.com/makovii/group_organiser/database"
+	"gorm.io/gorm"
 )
+
+type ManagerBody struct {
+	Id	uint	`json:"id"`
+}
 
 type AdminController struct {
 	DB *gorm.DB
@@ -17,19 +22,19 @@ func NewAdminController(db *gorm.DB) *AdminController {
 }
 
 func (a *AdminController) GetAdmin(c *gin.Context) {
-	var admin database.Admin
+	var admin database.User
 	c.JSON(http.StatusOK, admin)
 
 }
 
 func (a *AdminController) GetById(c *gin.Context) {
-	var GetById database.Admin
+	var GetById database.User
 	c.JSON(http.StatusOK, GetById)
 
 }
 
 func (a *AdminController) BanById(c *gin.Context) {
-	var BanById database.Player
+	var BanById database.User
 	BanById.Ban = true
 	c.JSON(http.StatusOK, BanById)
 
@@ -43,4 +48,15 @@ func (a *AdminController) GetTeams(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, teams)
+}
+
+func (a *AdminController) AcceptManagerRegistration(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Query("id"))
+
+	var manager database.User
+	a.DB.Where("id = ?", id).First(&manager)
+
+	manager.Ban = false;
+
+	a.DB.Save(&manager)
 }

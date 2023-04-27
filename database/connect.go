@@ -40,11 +40,6 @@ func ConnectDatabase() *gorm.DB {
 		return nil
 	}
 
-	err = database.AutoMigrate(&Player{})
-	if err != nil {
-		return nil
-	}
-
 	err = database.AutoMigrate(&Token{})
 	if err != nil {
 		return nil
@@ -60,7 +55,12 @@ func ConnectDatabase() *gorm.DB {
 		return nil
 	}
 
-	err = database.AutoMigrate(&Manager{})
+	err = database.AutoMigrate(&User{})
+	if err != nil {
+		return nil
+	}
+
+	err = database.AutoMigrate(&Role{})
 	if err != nil {
 		return nil
 	}

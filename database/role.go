@@ -1,6 +1,6 @@
 package database
 
-type Type struct {
+type Role struct {
 	Id      uint      `json:"id" gorm:"primary_key"`
-	Type    string    `json:"type"`
+	Role    string    `json:"role"`
 }

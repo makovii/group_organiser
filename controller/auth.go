@@ -70,31 +70,53 @@ func CheckPasswordHash(password, hash string) bool {
   return err == nil
 }
 
-func (a AuthController) SignUp(c *gin.Context){
-	var player database.Player
+func CreateAuthManagerRequest(a AuthController, idManager uint) {
+	request := database.Request{
+		From: idManager,
+		To: uint(a.CFG.Admin.Id),
+		StatusId: uint(a.CFG.Status.WaitId),
+		TypeId: uint(a.CFG.Type.RegistrationId),
+	}
 
-	if err := c.BindJSON(&player); err != nil {
+	// обработать ошибку на неудачное создание
+	a.DB.Create(&request)
+}
+
+func (a AuthController) SignUp(c *gin.Context){
+	var user database.User
+
+	if err := c.BindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	var dbplayer database.Player
-	a.DB.Where("email = ?", player.Email).First(&dbplayer)
+	var dbUser database.User
+	a.DB.Where("email = ?", user.Email).First(&dbUser)
 
-	if dbplayer.Email != "" {
+	if dbUser.Email != "" {
 		var err Error
 		err = SetError(err, "Email already in use")
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	} 
+	
 	var err error
-	player.Password, err = GeneratehashPassword(player.Password)
+	user.Password, err = GeneratehashPassword(user.Password)
 	if err != nil {
 		fmt.Println("Error in password hash", err)
 	}
 
-	a.DB.Create(&player)
-	c.JSON(http.StatusOK, player)
+	if user.Role == a.CFG.Role.ManagerId {
+		user.Ban = true
+	}
+
+	a.DB.Create(&user)
+
+	if user.Role == a.CFG.Role.ManagerId {
+		CreateAuthManagerRequest(a, user.Id)
+	}
+
+	c.JSON(http.StatusOK, user)
 }
 
 func (a AuthController) SignIn(c *gin.Context){
@@ -105,16 +127,36 @@ func (a AuthController) SignIn(c *gin.Context){
 		return
 	}
 
-	var authPlayer database.Player
-	a.DB.Where("email = ?", authdetails.Email).First(&authPlayer)
-	if authPlayer.Email == "" {
+	var authUser database.User
+	a.DB.Where("email = ?", authdetails.Email).First(&authUser)
+	if authUser.Email == "" {
 		var err Error
 		err = SetError(err, "Username or Password is incorrect")
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 
-	check := CheckPasswordHash(authdetails.Password, authPlayer.Password)
+	if authUser.Ban && authUser.Role == a.CFG.Role.ManagerId {
+		var err Error
+		err = SetError(err, "The administrator has not yet allowed you to log in")
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	
+	if authUser.Ban && authUser.Role == a.CFG.Role.PlayerId {
+		var err Error
+		err = SetError(err, "You was banned")
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+
+	var check bool
+	if authUser.Role != a.CFG.Role.AdminId {
+		check = CheckPasswordHash(authdetails.Password, authUser.Password)		
+	} else {
+		check = authUser.Password == authdetails.Password
+	}
+
 
 	if !check {
 		var err Error
@@ -123,7 +165,7 @@ func (a AuthController) SignIn(c *gin.Context){
 		return
 	}
 
-	validToken, err := GenerateJWT(authPlayer.Email, authPlayer.Name, authPlayer.Id, a.CFG.Secrets.Secret)
+	validToken, err := GenerateJWT(authUser.Email, authUser.Name, authUser.Id, a.CFG.Secrets.Secret)
 	if err != nil {
 		var err Error
 		err = SetError(err, "Failed to generate token")
@@ -132,7 +174,8 @@ func (a AuthController) SignIn(c *gin.Context){
 	}
 
 	var token database.Token
-	token.Email = authPlayer.Email
+	token.Email = authUser.Email
+	token.Role = authUser.Role
 	token.TokenString = validToken
 	c.JSON(http.StatusOK, token)
 }
