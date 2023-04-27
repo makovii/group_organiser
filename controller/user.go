@@ -2,71 +2,104 @@ package controller
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
+	"github.com/makovii/group_organiser/config"
 	"github.com/makovii/group_organiser/database"
+	"gorm.io/gorm"
 )
 
 type UserController struct {
 	DB *gorm.DB
+	CFG *config.Config
 }
 
-func NewUserController(db *gorm.DB) *UserController {
-	return &UserController{DB: db}
+type BodyJoinTeam struct {
+	TeamId	uint	`json:"teamId"`
+	UserId	uint	`json:"userId"`
 }
 
-func (u *UserController) GetUser(c *gin.Context) {
+func NewUserController(db *gorm.DB, cfg *config.Config) *UserController {
+	return &UserController{DB: db, CFG: cfg}
+}
+
+func (u *UserController) GetUserById(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Query("id"))
+	
 	var user database.User
-	user.Id = 1
-	user.Email = "someemail@gmail.com"
-	user.Name = "Bob"
-	user.Password = "42evev04vee9204vev02svvqvqev"
+	u.DB.Where("id = ?", id).First(&user)
+
 	c.JSON(http.StatusOK, user)
 }
 
 func (u *UserController) MyNotifications(c *gin.Context) {
-	var user database.User
+	to, _ := strconv.Atoi(c.Query("to"))
 
-	var requests database.Request
-	u.DB.Where("to = ?", user.Id).Find(&requests)
+	var requests []database.Request
+	u.DB.Where("\"to\" = ?", to).Find(&requests)
 
 	c.JSON(http.StatusOK, requests)
 }
 
 func (u *UserController) JoinTeam(c *gin.Context) {
-	var req database.Request
-	req.Id = 1
-	req.From = 24242
-	req.StatusId = 1
-	req.To = 222
-	req.TypeId = 111
-	c.JSON(http.StatusOK, req)
+	var body BodyJoinTeam
+	
+	if err := c.BindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var team database.Team
+	u.DB.Where("id = ?", body.TeamId).First(&team)
+
+	var request database.Request
+	request.From = body.UserId
+	request.To = team.ManagerID
+	request.StatusId = uint(u.CFG.Status.WaitId)
+	request.TypeId = uint(u.CFG.Type.LeaveTeamId)
+
+	u.DB.Save(&request)
+	c.JSON(http.StatusOK, request)
 }
 
 func (u *UserController) LeaveTeam(c *gin.Context) {
-	var req database.Request
-	req.Id = 1
-	req.From = 24242
-	req.StatusId = 1
-	req.To = 222
-	req.TypeId = 222
+	var body BodyJoinTeam
+	
+	if err := c.BindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	c.JSON(http.StatusOK, req)
+	var team database.Team
+	u.DB.Where("id = ?", body.TeamId).First(&team)
+
+	var request database.Request
+	request.From = body.UserId
+	request.To = team.ManagerID
+	request.StatusId = uint(u.CFG.Status.WaitId)
+	request.TypeId = uint(u.CFG.Type.JoinTeamId)
+
+	u.DB.Save(&request)
+	c.JSON(http.StatusOK, request)
 }
 
 func (u *UserController) CancelRequest(c *gin.Context) {
-	var req database.Request
-	req.Id = 1
-	req.From = 24242
-	req.StatusId = 1
-	req.To = 222
-	req.TypeId = 333
+	id, _ := strconv.Atoi(c.Query("id"))
 
-	c.JSON(http.StatusOK, req)
+	var request database.Request
+	u.DB.Where("id = ?", id).First(&request)
+
+	request.StatusId = uint(u.CFG.Status.CancelId)
+	u.DB.Save(&request)
+
+	c.JSON(http.StatusOK, request)
 }
 
 func (u *UserController) GetManagers(c *gin.Context) {
 	var managers []database.User
+
+	u.DB.Where("role = ?", u.CFG.Role.ManagerId).Find(&managers)
+
 	c.JSON(http.StatusOK, managers)
 }

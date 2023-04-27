@@ -9,10 +9,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type ManagerBody struct {
-	Id	uint	`json:"id"`
-}
-
 type AdminController struct {
 	DB *gorm.DB
 }

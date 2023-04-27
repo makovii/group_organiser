@@ -24,10 +24,13 @@ type StatusConfig struct {
 	WaitId int64
 	AcceptId int64
 	RejectId int64
+	CancelId int64
 }
 
 type TypeConfig struct {
 	RegistrationId	int64
+	JoinTeamId	int64
+	LeaveTeamId	int64
 }
 
 type RoleConfig struct {
@@ -76,10 +79,13 @@ func InitConfig(name string) *Config {
 		WaitId: viper.Get("status.waitId").(int64),
 		AcceptId: viper.Get("status.acceptId").(int64),
 		RejectId: viper.Get("status.rejectId").(int64),
+		CancelId: viper.Get("status.CancelId").(int64),
 	}
 
 	typeConfig := TypeConfig{
 		RegistrationId: viper.Get("type.registrationId").(int64),
+		JoinTeamId:	viper.Get("type.JoinTeamId").(int64),
+		LeaveTeamId: viper.Get("type.LeaveTeamId").(int64),
 	}
 
 	roleConfig := RoleConfig{

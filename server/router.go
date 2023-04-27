@@ -21,10 +21,10 @@ func NewRouter() *gin.Engine {
 	authGroup.POST("/signUp", auth.SignUp)
 
 
-	user := controller.NewUserController(db)
+	user := controller.NewUserController(db, cfg)
 	userGroup := router.Group("user")
 	userGroup.Use(middleware.IsAuthorized(cfg))
-	userGroup.GET("/getUser", user.GetUser)
+	userGroup.GET("/getUser", user.GetUserById)
 	userGroup.GET("/myNotifications", user.MyNotifications)
 	userGroup.POST("/joinTeam", user.JoinTeam)
 	userGroup.POST("/leaveTeam", user.LeaveTeam)
