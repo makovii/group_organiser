@@ -13,6 +13,18 @@ import (
 	"github.com/makovii/group_organiser/config"
 )
 
+type Authentication struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Role 		 int64	`json:"role"`
+}
+
+type Token struct {
+	Email       string `json:"email"`
+	TokenString string `json:"token"`
+	Role				int64	`json:"role"`
+}
 
 type AuthController struct {
 	DB *gorm.DB
@@ -120,7 +132,7 @@ func (a AuthController) SignUp(c *gin.Context){
 }
 
 func (a AuthController) SignIn(c *gin.Context){
-	var authdetails database.Authentication
+	var authdetails Authentication
 	
 	if err := c.BindJSON(&authdetails); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -173,7 +185,7 @@ func (a AuthController) SignIn(c *gin.Context){
 		return
 	}
 
-	var token database.Token
+	var token Token
 	token.Email = authUser.Email
 	token.Role = authUser.Role
 	token.TokenString = validToken
