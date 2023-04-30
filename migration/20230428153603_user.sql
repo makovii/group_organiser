@@ -12,5 +12,8 @@ CREATE TABLE users (
   PRIMARY KEY(id)
 );
 
+INSERT INTO users ("id", "name", "email", "password", "role")
+VALUES (1, 'admin', 'admin2gmail.com', '1234', 1);
+
 -- +goose Down
 DROP TABLE users;
