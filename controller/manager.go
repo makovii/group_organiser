@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/makovii/group_organiser/database"
+	"github.com/makovii/group_organiser/middleware"
 	"gorm.io/gorm"
 )
 
@@ -23,6 +24,11 @@ func (m *ManagerController) CreateTeam(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	authedUser, _ := c.Get("authedUser")
+	user := authedUser.(middleware.AuthedUser)
+	
+	team.ManagerID = uint(user.Id)
 
 	if err := m.DB.Create(&team).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

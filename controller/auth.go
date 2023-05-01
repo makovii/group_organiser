@@ -57,7 +57,7 @@ func GeneratehashPassword(password string) (string, error) {
 	return string(bytes), err
 }
 
-func GenerateJWT(email, name string, id uint, secret string) (string, error) {
+func GenerateJWT(email, name string, id uint, secret string, role int64) (string, error) {
 	var mySigningKey = []byte(secret)
 
 	token := jwt.New(jwt.SigningMethodHS256)
@@ -66,7 +66,8 @@ func GenerateJWT(email, name string, id uint, secret string) (string, error) {
 	claims["email"] = email
 	claims["name"] = name
 	claims["id"] = id
-	claims["exp"] = time.Now().Add(time.Hour + 24).Unix()
+	claims["role"] = role
+	claims["exp"] = time.Now().Add(time.Hour + 24 * 10).Unix() // can be 24
 
 	tokenString, err := token.SignedString(mySigningKey)
 
@@ -177,7 +178,7 @@ func (a AuthController) SignIn(c *gin.Context){
 		return
 	}
 
-	validToken, err := GenerateJWT(authUser.Email, authUser.Name, authUser.Id, a.CFG.Secrets.Secret)
+	validToken, err := GenerateJWT(authUser.Email, authUser.Name, authUser.Id, a.CFG.Secrets.Secret, authUser.Role)
 	if err != nil {
 		var err Error
 		err = SetError(err, "Failed to generate token")

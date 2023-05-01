@@ -1,8 +1,7 @@
 -- +goose Up
 CREATE TABLE roles (
-    id int NOT NULL,
-    role text,
-    PRIMARY KEY(id)
+    id SERIAL PRIMARY KEY,
+    role text
 );
 
 INSERT INTO roles ("id", "role")

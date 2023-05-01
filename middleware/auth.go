@@ -10,9 +10,10 @@ import (
 )
 
 type AuthedUser struct {
-	Id             float64 `json:"id"`
-	Name           string `json:"name"`
-	Email          string `json:"email"`
+	Id             float64  `json:"id"`
+	Name           string   `json:"name"`
+	Email          string   `json:"email"`
+	Role  				 float64  `json:"role"`
 }
 
 func IsAuthorized(cfg *config.Config) gin.HandlerFunc {
@@ -47,6 +48,7 @@ func IsAuthorized(cfg *config.Config) gin.HandlerFunc {
 				Id:             claims["id"].(float64),
 				Name:           claims["name"].(string),
 				Email:          claims["email"].(string),
+				Role:						claims["role"].(float64),
 			}
 			c.Set("authedUser", authedUser)
 			c.Next()

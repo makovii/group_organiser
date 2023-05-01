@@ -1,8 +1,7 @@
 -- +goose Up
 CREATE TABLE statuses (
-    id int NOT NULL,
-    status text,
-    PRIMARY KEY(id)
+    id SERIAL PRIMARY KEY,
+    status text
 );
 
 INSERT INTO statuses ("id", "status")

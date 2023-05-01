@@ -55,4 +55,5 @@ func (a *AdminController) AcceptManagerRegistration(c *gin.Context) {
 	manager.Ban = false;
 
 	a.DB.Save(&manager)
+	c.JSON(http.StatusOK, manager)
 }

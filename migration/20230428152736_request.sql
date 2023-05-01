@@ -1,11 +1,10 @@
 -- +goose Up
 CREATE TABLE requests (
-  id int NOT NULL,
+  id SERIAL PRIMARY KEY,
 	"from" bigint,
 	"to" bigint,
 	status_id bigint,
 	type_id   bigint,
-  PRIMARY KEY(id),
   CONSTRAINT fk_status_id
     FOREIGN KEY(status_id) 
       REFERENCES statuses(id),

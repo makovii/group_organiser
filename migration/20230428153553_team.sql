@@ -1,10 +1,9 @@
 -- +goose Up
 CREATE TABLE teams (
-  id int NOT NULL,
+  id SERIAL PRIMARY KEY,
 	"name" text,
 	manager_id bigint,
-	member_ids text[],
-  PRIMARY KEY(id)
+	member_ids text[]
 );
 
 -- +goose Down

@@ -1,8 +1,7 @@
 -- +goose Up
 CREATE TABLE types (
-    id int NOT NULL,
-    type text,
-    PRIMARY KEY(id)
+    id SERIAL PRIMARY KEY,
+    type text
 );
 
 INSERT INTO types ("id", "type")
