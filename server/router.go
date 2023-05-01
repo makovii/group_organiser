@@ -28,7 +28,8 @@ func NewRouter() *gin.Engine {
 	userGroup.POST("/joinTeam", user.JoinTeam)
 	userGroup.POST("/leaveTeam", user.LeaveTeam)
 	userGroup.POST("/cancelRequest", user.CancelRequest)
-	userGroup.GET("/getManagers", user.GetManagers)
+	userGroup.GET("/getAllManagers", user.GetAllManagers)
+	userGroup.GET("/getAllTeams", user.GetAllTeams)
 
 	manager := controller.NewManagerController(db)
 	managerGroup := router.Group("manager")
