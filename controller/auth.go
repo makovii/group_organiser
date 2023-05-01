@@ -143,7 +143,7 @@ func (a AuthController) SignIn(c *gin.Context){
 	a.DB.Where("email = ?", authdetails.Email).First(&authUser)
 	if authUser.Email == "" {
 		var err Error
-		err = SetError(err, "Username or Password is incorrect")
+		err = SetError(err, "Email or Password is incorrect")
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
