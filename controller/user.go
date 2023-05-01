@@ -121,15 +121,13 @@ func (u *UserController) CancelRequest(c *gin.Context) {
 			n.StatusId = uint(u.CFG.Status.CancelId)
 			u.DB.Save(&n)
 			c.JSON(http.StatusOK, n)
-			return
+			break
 		}
 	}
 
-	if canceledRequest == false {
+	if !canceledRequest {
 		c.JSON(http.StatusNotFound, gin.H{"error": "You don't have request with this id"})
 	}
-	
-	return
 }
 
 func (u *UserController) GetAllManagers(c *gin.Context) {
