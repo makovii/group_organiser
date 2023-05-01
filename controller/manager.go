@@ -2,10 +2,11 @@ package controller
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"github.com/makovii/group_organiser/database"
+	"gorm.io/gorm"
 )
 
 type ManagerController struct {
@@ -91,4 +92,36 @@ func (m *ManagerController) DeleteTeam(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "team deleted"})
+}
+
+func (m *ManagerController) AcceptUserRequest(c *gin.Context) {
+	teamID := c.Param("team_id")
+	userIDStr := c.Param("user_id")
+
+	userID, err := strconv.Atoi(userIDStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid user ID"})
+		return
+	}
+
+	var team database.Team
+	if err := m.DB.Where("id = ?", teamID).First(&team).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "team not found"})
+		return
+	}
+
+	var user database.User
+	if err := m.DB.Where("id = ?", userID).First(&user).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
+		return
+	}
+
+	if !team.HasUserRequest(uint(userID)) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "user has no request to join this team"})
+		return
+	}
+
+	if err := team.AcceptUserRequest(uint(userID), m.DB); err != nil {
+		c.JSON(http.StatusOK, gin.H{"message": "user request accepted"})
+	}
 }

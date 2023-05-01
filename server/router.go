@@ -2,10 +2,10 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/makovii/group_organiser/config"
 	"github.com/makovii/group_organiser/controller"
 	"github.com/makovii/group_organiser/database"
 	"github.com/makovii/group_organiser/middleware"
-	"github.com/makovii/group_organiser/config"
 )
 
 func NewRouter() *gin.Engine {
@@ -19,7 +19,6 @@ func NewRouter() *gin.Engine {
 	authGroup := router.Group("auth")
 	authGroup.POST("/signIn", auth.SignIn)
 	authGroup.POST("/signUp", auth.SignUp)
-
 
 	user := controller.NewUserController(db, cfg)
 	userGroup := router.Group("user")
@@ -39,6 +38,7 @@ func NewRouter() *gin.Engine {
 	managerGroup.GET("/getTeam", manager.GetTeam)
 	managerGroup.PUT("/updateTeam", manager.UpdateTeam)
 	managerGroup.DELETE("/deleteTeam", manager.DeleteTeam)
+	managerGroup.POST("/acceptUserRequest", manager.AcceptUserRequest)
 
 	admin := controller.NewAdminController(db)
 	adminGroup := router.Group("admin")
@@ -48,7 +48,6 @@ func NewRouter() *gin.Engine {
 	adminGroup.POST("/banById", admin.BanById)
 	adminGroup.POST("/getTeams", admin.GetTeams)
 	adminGroup.POST("/acceptRegistration", admin.AcceptManagerRegistration)
-
 
 	return router
 }
