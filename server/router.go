@@ -6,6 +6,8 @@ import (
 	"github.com/makovii/group_organiser/controller"
 	"github.com/makovii/group_organiser/database"
 	"github.com/makovii/group_organiser/middleware"
+	"github.com/makovii/group_organiser/repository"
+	"github.com/makovii/group_organiser/service"
 )
 
 func NewRouter() *gin.Engine {
@@ -20,11 +22,13 @@ func NewRouter() *gin.Engine {
 	authGroup.POST("/signIn", auth.SignIn)
 	authGroup.POST("/signUp", auth.SignUp)
 
-	user := controller.NewUserController(db, cfg)
+	userRpository := repository.NewUserRepository(db, cfg)
+	userService := service.NewUserService(userRpository)
+	user := controller.NewUserController(db, cfg, userService)
 	userGroup := router.Group("user")
 	userGroup.Use(middleware.IsAuthorized(cfg))
 	userGroup.GET("/getUser", user.GetUserById)
-	userGroup.GET("/myNotifications", user.MyNotifications)
+	userGroup.GET("/myNotifications", user.GetNotifications)
 	userGroup.POST("/joinTeam", user.JoinTeam)
 	userGroup.POST("/leaveTeam", user.LeaveTeam)
 	userGroup.POST("/cancelRequest", user.CancelRequest)
