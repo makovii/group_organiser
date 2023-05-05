@@ -5,129 +5,148 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/makovii/group_organiser/config"
 	"github.com/makovii/group_organiser/database"
-	"github.com/makovii/group_organiser/middleware"
 	"gorm.io/gorm"
 )
 
+type IManagerService interface {
+	CreateTeam(name string, managerID uint) (*database.Team, error)
+	GetAllTeams(managerID uint) (*[]database.Team, error)
+	GetTeam(teamID uint, managerID uint) (*database.Team, error)
+	UpdateTeam(teamID uint, managerID uint, name string) (*database.Team, error)
+	DeleteTeam(teamID uint, managerID uint) error
+}
+
 type ManagerController struct {
-	DB *gorm.DB
+	DB      *gorm.DB
+	CFG     *config.Config
+	Service IManagerService
 }
 
-func NewManagerController(db *gorm.DB) *ManagerController {
-	return &ManagerController{DB: db}
+type BodyCreateTeam struct {
+	Name string `json:"name"`
 }
 
-func (m *ManagerController) CreateTeam(c *gin.Context) {
-	var team database.Team
-	if err := c.ShouldBindJSON(&team); err != nil {
+type BodyUpdateTeam struct {
+	Name string `json:"name"`
+}
+
+func NewManagerController(db *gorm.DB, cfg *config.Config, service IManagerService) *ManagerController {
+	return &ManagerController{DB: db, CFG: cfg, Service: service}
+}
+
+func (mc *ManagerController) CreateTeam(c *gin.Context) {
+	var body BodyCreateTeam
+
+	if err := c.BindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	authedUser, _ := c.Get("authedUser")
-	user := authedUser.(middleware.AuthedUser)
-	
-	team.ManagerID = uint(user.Id)
+	managerID, err := strconv.Atoi(c.Query("managerId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	if err := m.DB.Create(&team).Error; err != nil {
+	team, err := mc.Service.CreateTeam(body.Name, uint(managerID))
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, team)
+	c.JSON(http.StatusOK, team)
 }
 
-func (m *ManagerController) GetAllTeams(c *gin.Context) {
-	var teams []database.Team
-	if err := m.DB.Find(&teams).Error; err != nil {
+func (mc *ManagerController) GetAllTeams(c *gin.Context) {
+	managerID, err := strconv.Atoi(c.Query("managerId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	teams, err := mc.Service.GetAllTeams(uint(managerID))
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if len(*teams) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Teams not found"})
 		return
 	}
 
 	c.JSON(http.StatusOK, teams)
 }
 
-func (m *ManagerController) GetTeam(c *gin.Context) {
-	id := c.Param("id")
-
-	var team database.Team
-	if err := m.DB.Where("id = ?", id).First(&team).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "team not found"})
-		return
-	}
-
-	c.JSON(http.StatusOK, team)
-}
-
-func (m *ManagerController) UpdateTeam(c *gin.Context) {
-	id := c.Param("id")
-
-	var team database.Team
-	if err := m.DB.Where("id = ?", id).First(&team).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "team not found"})
-		return
-	}
-
-	var updateData map[string]interface{}
-	if err := c.ShouldBindJSON(&updateData); err != nil {
+func (mc *ManagerController) GetTeam(c *gin.Context) {
+	managerID, err := strconv.Atoi(c.Query("managerId"))
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := m.DB.Model(&team).Updates(updateData).Error; err != nil {
+	teamID, err := strconv.Atoi(c.Param("teamId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	team, err := mc.Service.GetTeam(uint(teamID), uint(managerID))
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, team)
 }
+func (mc *ManagerController) UpdateTeam(c *gin.Context) {
+	var body BodyUpdateTeam
 
-func (m *ManagerController) DeleteTeam(c *gin.Context) {
-	id := c.Param("id")
-
-	var team database.Team
-	if err := m.DB.Where("id = ?", id).First(&team).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "team not found"})
+	if err := c.BindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := m.DB.Delete(&team).Error; err != nil {
+	managerID, err := strconv.Atoi(c.Query("managerId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	teamID, err := strconv.Atoi(c.Param("teamId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	team, err := mc.Service.UpdateTeam(uint(teamID), uint(managerID), body.Name)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "team deleted"})
+	c.JSON(http.StatusOK, team)
 }
-
-func (m *ManagerController) AcceptUserRequest(c *gin.Context) {
-	teamID := c.Param("team_id")
-	userIDStr := c.Param("user_id")
-
-	userID, err := strconv.Atoi(userIDStr)
+func (mc *ManagerController) DeleteTeam(c *gin.Context) {
+	teamID, err := strconv.Atoi(c.Param("teamId"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid user ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	var team database.Team
-	if err := m.DB.Where("id = ?", teamID).First(&team).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "team not found"})
+	managerID, err := strconv.Atoi(c.Query("managerId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	var user database.User
-	if err := m.DB.Where("id = ?", userID).First(&user).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
+	err = mc.Service.DeleteTeam(uint(teamID), uint(managerID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	if !team.HasUserRequest(uint(userID)) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "user has no request to join this team"})
-		return
-	}
-
-	if err := team.AcceptUserRequest(uint(userID), m.DB); err != nil {
-		c.JSON(http.StatusOK, gin.H{"message": "user request accepted"})
-	}
+	c.JSON(http.StatusOK, gin.H{"message": "Team deleted"})
 }

@@ -35,7 +35,9 @@ func NewRouter() *gin.Engine {
 	userGroup.GET("/getAllManagers", user.GetAllManagers)
 	userGroup.GET("/getAllTeams", user.GetAllTeams)
 
-	manager := controller.NewManagerController(db)
+	managerRepository := repository.NewManagerRepository(db)
+	managerService := service.NewManagerService(managerRepository)
+	manager := controller.NewManagerController(db, cfg, managerService)
 	managerGroup := router.Group("manager")
 	managerGroup.Use(middleware.IsAuthorized(cfg))
 	managerGroup.POST("/createTeam", manager.CreateTeam)
@@ -43,7 +45,6 @@ func NewRouter() *gin.Engine {
 	managerGroup.GET("/getTeam", manager.GetTeam)
 	managerGroup.PUT("/updateTeam", manager.UpdateTeam)
 	managerGroup.DELETE("/deleteTeam", manager.DeleteTeam)
-	managerGroup.POST("/acceptUserRequest", manager.AcceptUserRequest)
 
 	admin := controller.NewAdminController(db, cfg)
 	adminGroup := router.Group("admin")
