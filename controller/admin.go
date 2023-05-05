@@ -10,22 +10,33 @@ import (
 	"gorm.io/gorm"
 )
 
-type AdminController struct {
-	DB  *gorm.DB
-	CFG *config.Config
+type IAdminService interface {
+	GetAdmins() (*[]database.User, error)
+	GetUserById(id int) (*database.User, error)
+	GetTeamById(id uint) (*database.Team, error)
+	GetTeams() (*[]database.Team, error)
+	BanById(id int) (*database.User, error)
+	AcceptManagerRegistration(id int) (*database.User, error)
 }
 
-func NewAdminController(db *gorm.DB, cfg *config.Config) *AdminController {
-	return &AdminController{DB: db, CFG: cfg}
+type AdminController struct {
+	DB      *gorm.DB
+	CFG     *config.Config
+	service IAdminService
+}
+
+func NewAdminController(db *gorm.DB, cfg *config.Config, service IAdminService) *AdminController {
+	return &AdminController{DB: db, CFG: cfg, service: service}
 }
 
 func (a *AdminController) GetAdmins(c *gin.Context) {
-	var admins []database.User
+	admins, err := a.service.GetAdmins()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
 
-	a.DB.Where("role = ?", a.CFG.Role.AdminId).Find(&admins)
-
-	if len(admins) == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Admins"})
+	if len(*admins) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Admins not found"})
 		return
 	}
 
@@ -35,55 +46,63 @@ func (a *AdminController) GetAdmins(c *gin.Context) {
 
 func (a *AdminController) GetUserById(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Query("id"))
-	var user database.User
+	var user *database.User
 
-	if a.DB.Where("id = ?", id).First(&user) != nil {
-		c.JSON(http.StatusOK, user)
-	} else {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+	user, err := a.service.GetUserById(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
+
+	c.JSON(http.StatusOK, user)
+
 }
 
 func (a *AdminController) GetTeamById(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Query("id"))
-	var teams database.Team
+	var teams *database.Team
 
-	if a.DB.Where("id = ?", id).First(&teams) != nil {
-		c.JSON(http.StatusOK, teams)
+	teams, err := a.service.GetTeamById(uint(id))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	} else {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Team not found"})
+		c.JSON(http.StatusOK, teams)
 	}
 
 }
 
-func (a *AdminController) BanById(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Query("id"))
-
-	var BanById database.User
-	a.DB.Where("id = ?", id).First(&BanById)
-	BanById.Ban = true
-	c.JSON(http.StatusOK, BanById)
-
-}
-
 func (a *AdminController) GetTeams(c *gin.Context) {
-	var teams []database.Team
-	if err := a.DB.Find(&teams).Error; err != nil {
+	teams, err := a.service.GetTeams()
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+	if len(*teams) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Teams not found"})
 		return
 	}
 
 	c.JSON(http.StatusOK, teams)
 }
 
+func (a *AdminController) BanById(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Query("id"))
+	var BanById *database.User
+
+	BanById, err := a.service.BanById(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	} else {
+		c.JSON(http.StatusOK, BanById)
+	}
+}
+
 func (a *AdminController) AcceptManagerRegistration(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Query("id"))
+	var manager *database.User
 
-	var manager database.User
-	a.DB.Where("id = ?", id).First(&manager)
-
-	manager.Ban = false
-
-	a.DB.Save(&manager)
-	c.JSON(http.StatusOK, manager)
+	manager, err := a.service.AcceptManagerRegistration(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	} else {
+		c.JSON(http.StatusOK, manager)
+	}
 }
