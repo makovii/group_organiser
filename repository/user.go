@@ -8,9 +8,6 @@ import (
 	"gorm.io/gorm"
 )
 
-const selectByIdQuery = "SELECT uuid,date,description,price,status FROM orders WHERE uuid=$1"
-const insertQuery = "INSERT INTO orders (uuid,date,description,price,status) VALUES ($1, $2, $3, $4, $5)"
-
 type UserRepository struct {
 	DB *gorm.DB
 	CFG *config.Config

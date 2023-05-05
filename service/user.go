@@ -100,7 +100,10 @@ func (u *UserService) CancelRequest(c *gin.Context, CFG *config.Config, id int) 
 	for _, n := range *userRequests {
 		if id == int(n.Id) {
 			n.StatusId = uint(CFG.Status.CancelId)
-			u.userRepository.SaveRequest(n)
+			_, err := u.userRepository.SaveRequest(n)
+			if err != nil {
+				return nil, errors.New("Smth goes wrong with save request")
+			}
 			return &n, nil
 		}
 	}
