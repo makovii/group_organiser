@@ -5,24 +5,20 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/makovii/group_organiser/config"
 	"github.com/makovii/group_organiser/database"
-	"gorm.io/gorm"
 )
 
 type IUserService interface {
 	GetUserById(id int) (*database.User, error)
 	GetNotifications(to int) (*[]database.Request, error)
-	JoinTeam(c *gin.Context, CFG *config.Config, body BodyJoinTeam) (*database.Request, error)
-	LeaveTeam(c *gin.Context, CFG *config.Config, body BodyJoinTeam) (*database.Request, error)
-	CancelRequest(c *gin.Context, CFG *config.Config, id int) (*database.Request, error)
+	JoinTeam(c *gin.Context, body BodyJoinTeam) (*database.Request, error)
+	LeaveTeam(c *gin.Context, body BodyJoinTeam) (*database.Request, error)
+	CancelRequest(c *gin.Context, id int) (*database.Request, error)
 	GetAllManagers() (*[]database.User, error)
 	GetAllTeams() (*[]database.Team, error)
 }
 
 type UserController struct {
-	DB      *gorm.DB
-	CFG     *config.Config
 	service IUserService
 }
 
@@ -30,8 +26,8 @@ type BodyJoinTeam struct {
 	TeamId uint `json:"teamId"`
 }
 
-func NewUserController(db *gorm.DB, cfg *config.Config, service IUserService) *UserController {
-	return &UserController{DB: db, CFG: cfg, service: service}
+func NewUserController(service IUserService) *UserController {
+	return &UserController{service: service}
 }
 
 func (u *UserController) GetUserById(c *gin.Context) {
@@ -70,7 +66,7 @@ func (u *UserController) JoinTeam(c *gin.Context) {
 		return
 	}
 
-	request, err := u.service.JoinTeam(c, u.CFG, body)
+	request, err := u.service.JoinTeam(c, body)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -87,7 +83,7 @@ func (u *UserController) LeaveTeam(c *gin.Context) {
 		return
 	}
 
-	request, err := u.service.LeaveTeam(c, u.CFG, body)
+	request, err := u.service.LeaveTeam(c, body)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -99,7 +95,7 @@ func (u *UserController) LeaveTeam(c *gin.Context) {
 func (u *UserController) CancelRequest(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Query("id"))
 
-	request, err := u.service.CancelRequest(c, u.CFG, id)
+	request, err := u.service.CancelRequest(c, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	} else {

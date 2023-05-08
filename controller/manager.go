@@ -19,8 +19,6 @@ type IManagerService interface {
 }
 
 type ManagerController struct {
-	DB      *gorm.DB
-	CFG     *config.Config
 	Service IManagerService
 }
 
@@ -33,7 +31,7 @@ type BodyUpdateTeam struct {
 }
 
 func NewManagerController(db *gorm.DB, cfg *config.Config, service IManagerService) *ManagerController {
-	return &ManagerController{DB: db, CFG: cfg, Service: service}
+	return &ManagerController{Service: service}
 }
 
 func (mc *ManagerController) CreateTeam(c *gin.Context) {

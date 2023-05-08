@@ -6,8 +6,12 @@ import (
 	"github.com/makovii/group_organiser/controller"
 	"github.com/makovii/group_organiser/database"
 	"github.com/makovii/group_organiser/middleware"
-	"github.com/makovii/group_organiser/repository"
-	"github.com/makovii/group_organiser/service"
+	adminService "github.com/makovii/group_organiser/admin/service"
+	managerService "github.com/makovii/group_organiser/manager/service"
+	userService "github.com/makovii/group_organiser/user/service"
+	adminRepo "github.com/makovii/group_organiser/admin/repository"
+	managerRepo "github.com/makovii/group_organiser/manager/repository"
+	userRepo "github.com/makovii/group_organiser/user/repository"
 )
 
 func NewRouter() *gin.Engine {
@@ -22,9 +26,9 @@ func NewRouter() *gin.Engine {
 	authGroup.POST("/signIn", auth.SignIn)
 	authGroup.POST("/signUp", auth.SignUp)
 
-	userRpository := repository.NewUserRepository(db, cfg)
-	userService := service.NewUserService(userRpository)
-	user := controller.NewUserController(db, cfg, userService)
+	userRpository := userRepo.NewUserRepository(db, cfg)
+	userService := userService.NewUserService(cfg, userRpository)
+	user := controller.NewUserController(userService)
 	userGroup := router.Group("user")
 	userGroup.Use(middleware.IsAuthorized(cfg))
 	userGroup.GET("/getUser", user.GetUserById)
@@ -35,8 +39,8 @@ func NewRouter() *gin.Engine {
 	userGroup.GET("/getAllManagers", user.GetAllManagers)
 	userGroup.GET("/getAllTeams", user.GetAllTeams)
 
-	managerRepository := repository.NewManagerRepository(db)
-	managerService := service.NewManagerService(managerRepository)
+	managerRepository := managerRepo.NewManagerRepository(db)
+	managerService := managerService.NewManagerService(managerRepository)
 	manager := controller.NewManagerController(db, cfg, managerService)
 	managerGroup := router.Group("manager")
 	managerGroup.Use(middleware.IsAuthorized(cfg))
@@ -46,8 +50,8 @@ func NewRouter() *gin.Engine {
 	managerGroup.PUT("/updateTeam", manager.UpdateTeam)
 	managerGroup.DELETE("/deleteTeam", manager.DeleteTeam)
 
-	adminRepository := repository.NewAdminRepository(db, cfg)
-	adminService := service.NewAdminService(adminRepository)
+	adminRepository := adminRepo.NewAdminRepository(db, cfg)
+	adminService := adminService.NewAdminService(adminRepository)
 	admin := controller.NewAdminController(db, cfg, adminService)
 	adminGroup := router.Group("admin")
 	adminGroup.Use(middleware.IsAuthorized(cfg))

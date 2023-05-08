@@ -23,11 +23,12 @@ type IUserRepository interface {
 }
 
 type UserService struct {
+	CFG *config.Config
 	userRepository IUserRepository
 }
 
-func NewUserService(userRepository IUserRepository) *UserService {
-	return &UserService{userRepository}
+func NewUserService(cfg *config.Config, userRepository IUserRepository) *UserService {
+	return &UserService{CFG: cfg, userRepository: userRepository}
 }
 
 func (u *UserService) GetUserById(id int) (*database.User, error) {
@@ -38,7 +39,7 @@ func (u *UserService) GetNotifications(to int) (*[]database.Request, error) {
 	return u.userRepository.GetNotifications(to)
 }
 
-func (u *UserService) JoinTeam(c *gin.Context, CFG *config.Config, body controller.BodyJoinTeam) (*database.Request, error) {
+func (u *UserService) JoinTeam(c *gin.Context, body controller.BodyJoinTeam) (*database.Request, error) {
 	authedUser, _ := c.Get("authedUser")
 	user := authedUser.(middleware.AuthedUser)
 
@@ -51,8 +52,8 @@ func (u *UserService) JoinTeam(c *gin.Context, CFG *config.Config, body controll
 	var request database.Request
 	request.From = uint(user.Id)
 	request.To = team.ManagerID
-	request.StatusId = uint(CFG.Status.WaitId)
-	request.TypeId = uint(CFG.Type.JoinTeamId)
+	request.StatusId = uint(u.CFG.Status.WaitId)
+	request.TypeId = uint(u.CFG.Type.JoinTeamId)
 
 	result, err := u.userRepository.CreateRequest(request)
 	if err != nil {
@@ -63,7 +64,7 @@ func (u *UserService) JoinTeam(c *gin.Context, CFG *config.Config, body controll
 	return &request, nil
 }
 
-func (u *UserService) LeaveTeam(c *gin.Context, CFG *config.Config, body controller.BodyJoinTeam) (*database.Request, error) {
+func (u *UserService) LeaveTeam(c *gin.Context, body controller.BodyJoinTeam) (*database.Request, error) {
 	authedUser, _ := c.Get("authedUser")
 	user := authedUser.(middleware.AuthedUser)
 
@@ -76,8 +77,8 @@ func (u *UserService) LeaveTeam(c *gin.Context, CFG *config.Config, body control
 	var request database.Request
 	request.From = uint(user.Id)
 	request.To = team.ManagerID
-	request.StatusId = uint(CFG.Status.WaitId)
-	request.TypeId = uint(CFG.Type.LeaveTeamId)
+	request.StatusId = uint(u.CFG.Status.WaitId)
+	request.TypeId = uint(u.CFG.Type.LeaveTeamId)
 
 	result, err := u.userRepository.CreateRequest(request)
 	if err != nil {
@@ -88,7 +89,7 @@ func (u *UserService) LeaveTeam(c *gin.Context, CFG *config.Config, body control
 	return &request, nil
 }
 
-func (u *UserService) CancelRequest(c *gin.Context, CFG *config.Config, id int) (*database.Request, error) {
+func (u *UserService) CancelRequest(c *gin.Context,id int) (*database.Request, error) {
 	authedUser, _ := c.Get("authedUser")
 	user := authedUser.(middleware.AuthedUser)
 
@@ -99,7 +100,7 @@ func (u *UserService) CancelRequest(c *gin.Context, CFG *config.Config, id int) 
 
 	for _, n := range *userRequests {
 		if id == int(n.Id) {
-			n.StatusId = uint(CFG.Status.CancelId)
+			n.StatusId = uint(u.CFG.Status.CancelId)
 			_, err := u.userRepository.SaveRequest(n)
 			if err != nil {
 				return nil, errors.New("Smth goes wrong with save request")

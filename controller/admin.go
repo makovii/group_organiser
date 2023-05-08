@@ -20,13 +20,11 @@ type IAdminService interface {
 }
 
 type AdminController struct {
-	DB      *gorm.DB
-	CFG     *config.Config
 	service IAdminService
 }
 
 func NewAdminController(db *gorm.DB, cfg *config.Config, service IAdminService) *AdminController {
-	return &AdminController{DB: db, CFG: cfg, service: service}
+	return &AdminController{service: service}
 }
 
 func (a *AdminController) GetAdmins(c *gin.Context) {
