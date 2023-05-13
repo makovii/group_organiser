@@ -84,3 +84,75 @@ func TestCreateTeamError(t *testing.T) {
 	assert.Error(t, err)
 	assert.Nil(t, team)
 }
+func TestGetTeam(t *testing.T) {
+	// given
+	managerID := uint(1)
+	teamID := uint(1)
+
+	expectedTeam := &database.Team{
+		Id:        1,
+		ManagerID: managerID,
+	}
+
+	mockRepo := &ManagerRepositoryMock{
+		GetTeamFunc: func(teamID uint, managerID uint) (*database.Team, error) {
+			return expectedTeam, nil
+		},
+	}
+
+	service := service.NewManagerService(mockRepo)
+
+	// when
+	team, err := service.GetTeam(teamID, managerID)
+
+	// then
+	assert.NoError(t, err)
+	assert.Equal(t, expectedTeam, team)
+}
+func TestUpdateTeam(t *testing.T) {
+	// given
+	managerID := uint(1)
+	teamID := uint(1)
+	name := "team name"
+
+	expectedTeam := &database.Team{
+		Id:        1,
+		Name:      name,
+		ManagerID: managerID,
+	}
+
+	mockRepo := &ManagerRepositoryMock{
+		UpdateTeamFunc: func(teamID uint, managerID uint, name string) (*database.Team, error) {
+			return expectedTeam, nil
+		},
+	}
+
+	service := service.NewManagerService(mockRepo)
+
+	// when
+	team, err := service.UpdateTeam(teamID, managerID, name)
+
+	// then
+	assert.NoError(t, err)
+	assert.Equal(t, expectedTeam, team)
+}
+func TestDeleteTeam(t *testing.T) {
+	// given
+	managerID := uint(1)
+	teamID := uint(1)
+
+	mockRepo := &ManagerRepositoryMock{
+		DeleteTeamFunc: func(teamID uint, managerID uint) error {
+			return nil
+		},
+	}
+
+	service := service.NewManagerService(mockRepo)
+
+	// when
+	err := service.DeleteTeam(teamID, managerID)
+
+	// then
+	assert.NoError(t, err)
+	assert.Equal(t, nil, err)
+}
