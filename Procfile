@@ -1,1 +1,1 @@
-web: sh setup.sh && go run main.go
+web: sh setup.sh && streamlit run main.go
