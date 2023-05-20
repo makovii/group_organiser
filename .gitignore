@@ -21,4 +21,4 @@
 go.work
 
 # Config files
-config.toml
+config/config.toml
