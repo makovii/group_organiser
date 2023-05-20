@@ -1,6 +1,7 @@
 package service_test
 
 import (
+	"fmt"
 	"net/http/httptest"
 	"testing"
 
@@ -24,7 +25,9 @@ func  BenchmarkUserGetUserById(b *testing.B) {
 	service := service.NewUserService(cfg, userRpository)
 
 	for n := 0; n < b.N; n++ {
-		service.GetUserById(1)
+		if _, err := service.GetUserById(1); err != nil {
+			fmt.Print(err)
+		}
 	}
 
 }
@@ -38,8 +41,11 @@ func  BenchmarkUserGetNotifications(b *testing.B) {
 	service := service.NewUserService(cfg, userRpository)
 
 	for n := 0; n < b.N; n++ {
-		service.GetNotifications(1)
+		if _, err := service.GetNotifications(1); err != nil {
+			fmt.Print(err)
+		}
 	}
+	
 
 }
 
@@ -52,7 +58,9 @@ func  BenchmarkUserGetAllManagers(b *testing.B) {
 	service := service.NewUserService(cfg, userRpository)
 
 	for n := 0; n < b.N; n++ {
-		service.GetAllManagers()
+		if _, err := service.GetAllManagers(); err != nil {
+			fmt.Print(err)
+		}
 	}
 
 }
@@ -66,9 +74,10 @@ func  BenchmarkUserGetAllTeams(b *testing.B) {
 	service := service.NewUserService(cfg, userRpository)
 
 	for n := 0; n < b.N; n++ {
-		service.GetAllTeams()
+		if _, err := service.GetAllTeams(); err != nil {
+			fmt.Print(err)
+		}
 	}
-
 }
 
 func  BenchmarkUserJoinTeam(b *testing.B) {
@@ -93,7 +102,9 @@ func  BenchmarkUserJoinTeam(b *testing.B) {
 	
 	body := controller.BodyJoinTeam{ TeamId: 1 }
 	for n := 0; n < b.N; n++ {
-		service.JoinTeam(c, body)
+		if _, err := service.JoinTeam(c, body); err != nil {
+			fmt.Print(err)
+		}
 	}
 
 }
