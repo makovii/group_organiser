@@ -57,6 +57,7 @@ type DatabaseConfig struct {
 	Password string
 	DbName   string
 	Secure   bool
+	Dbstring string
 }
 
 var config *Config
@@ -112,6 +113,7 @@ func InitConfig(name string) *Config {
 		Password: viper.Get("db.password").(string),
 		DbName:   viper.Get("db.name").(string),
 		Secure:   viper.Get("db.secure").(bool),
+		Dbstring:   viper.Get("db.dbstring").(string),
 	}
 
 	config = &Config{

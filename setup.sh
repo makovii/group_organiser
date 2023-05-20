@@ -47,4 +47,5 @@ user = "perceval"
 password = "password"
 name = "group_organiser"
 secure = false
+dbstring = "postgres://postgres:postgresql123@db.nefqglwoqprhqqonldik.supabase.co:6543/postgres"
 ' >> ~/config/config.toml
