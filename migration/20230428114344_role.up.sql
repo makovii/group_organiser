@@ -7,5 +7,3 @@ CREATE TABLE roles (
 INSERT INTO roles ("id", "role")
 VALUES (1, 'admin'), (2, 'manager'), (3, 'player') ;
 
--- +goose Down
-DROP TABLE roles;

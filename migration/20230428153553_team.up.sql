@@ -6,5 +6,3 @@ CREATE TABLE teams (
 	member_ids text[]
 );
 
--- +goose Down
-DROP TABLE teams;

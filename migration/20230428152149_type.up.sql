@@ -7,5 +7,3 @@ CREATE TABLE types (
 INSERT INTO types ("id", "type")
 VALUES (1, 'registration'), (2, 'joinTeam'), (3, 'leaveTeam');
 
--- +goose Down
-DROP TABLE types;

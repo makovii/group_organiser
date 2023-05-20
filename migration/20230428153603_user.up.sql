@@ -14,5 +14,3 @@ CREATE TABLE users (
 INSERT INTO users ("id", "name", "email", "password", "role")
 VALUES (0, 'admin', 'admin@gmail.com', '1234', 1);
 
--- +goose Down
-DROP TABLE users;

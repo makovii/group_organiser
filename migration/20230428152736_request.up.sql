@@ -13,6 +13,3 @@ CREATE TABLE requests (
       REFERENCES types(id)
   
 );
-
--- +goose Down
-DROP TABLE requests;
