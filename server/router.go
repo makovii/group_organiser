@@ -2,16 +2,16 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
+	adminRepo "github.com/makovii/group_organiser/admin/repository"
+	adminService "github.com/makovii/group_organiser/admin/service"
 	"github.com/makovii/group_organiser/config"
 	"github.com/makovii/group_organiser/controller"
 	"github.com/makovii/group_organiser/database"
-	"github.com/makovii/group_organiser/middleware"
-	adminService "github.com/makovii/group_organiser/admin/service"
-	managerService "github.com/makovii/group_organiser/manager/service"
-	userService "github.com/makovii/group_organiser/user/service"
-	adminRepo "github.com/makovii/group_organiser/admin/repository"
 	managerRepo "github.com/makovii/group_organiser/manager/repository"
+	managerService "github.com/makovii/group_organiser/manager/service"
+	"github.com/makovii/group_organiser/middleware"
 	userRepo "github.com/makovii/group_organiser/user/repository"
+	userService "github.com/makovii/group_organiser/user/service"
 )
 
 func NewRouter() *gin.Engine {
@@ -52,7 +52,7 @@ func NewRouter() *gin.Engine {
 
 	adminRepository := adminRepo.NewAdminRepository(db, cfg)
 	adminService := adminService.NewAdminService(adminRepository)
-	admin := controller.NewAdminController(db, cfg, adminService)
+	admin := controller.NewAdminController(adminService)
 	adminGroup := router.Group("admin")
 	adminGroup.Use(middleware.IsAuthorized(cfg))
 	adminGroup.GET("/getAdmins", admin.GetAdmins)
