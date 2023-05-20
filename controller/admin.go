@@ -5,9 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/makovii/group_organiser/config"
 	"github.com/makovii/group_organiser/database"
-	"gorm.io/gorm"
 )
 
 type IAdminService interface {
@@ -23,7 +21,7 @@ type AdminController struct {
 	service IAdminService
 }
 
-func NewAdminController(db *gorm.DB, cfg *config.Config, service IAdminService) *AdminController {
+func NewAdminController(service IAdminService) *AdminController {
 	return &AdminController{service: service}
 }
 
