@@ -1,0 +1,39 @@
+[admin]
+admin_id = 1
+
+[status]
+waitId = 1
+acceptId = 2
+rejectId = 3
+cancelId = 4
+
+[type]
+registrationId = 1
+JoinTeamId = 2
+LeaveTeamId = 3
+
+[role]
+adminId = 1
+managerId = 2
+playerId = 3
+
+
+[server]
+secure = false
+domain = "localhost"
+base = "http://localhost:1234"
+host = "localhost"
+port = 8080
+
+
+[secrets]
+jwt = "secret"
+
+[db]
+host = "localhost"
+port = 5432
+user = "alex"
+password = "password"
+name = "group_organiser_test"
+secure = false
+dbstring = "postgres://postgres:postgresql123@db.nefqglwoqprhqqonldik.supabase.co:6543/postgres"

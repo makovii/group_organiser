@@ -13,11 +13,11 @@ var DB *gorm.DB
 func ConnectDatabase() *gorm.DB {
 	cfg := config.GetConfig()
 
-	// psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-	// 	"password=%s dbname=%s sslmode=disable",
-	// 	cfg.Database.Host, cfg.Database.Port, cfg.Database.User,
-	// 	cfg.Database.Password, cfg.Database.DbName)
-	psqlInfo := fmt.Sprintf(cfg.Database.Dbstring)
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		cfg.Database.Host, cfg.Database.Port, cfg.Database.User,
+		cfg.Database.Password, cfg.Database.DbName)
+	// psqlInfo := fmt.Sprintf(cfg.Database.Dbstring)
 
 	database, err := gorm.Open(postgres.Open(psqlInfo))
 	if err != nil {
