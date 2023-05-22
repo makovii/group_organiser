@@ -32,7 +32,7 @@ jwt = "secret"
 [db]
 host = "localhost"
 port = 5432
-user = "perceval"
-password = "password"
+user = "postgres"
+password = "root"
 name = "group_organiser"
 secure = false
