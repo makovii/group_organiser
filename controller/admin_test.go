@@ -12,14 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type MockAdminController struct {
-	// GetAdminsFunc                 func() (*[]database.User, error)
-	// GetUserByIdFunc               func(id int) (*database.User, error)
-	// GetTeamByIdFunc               func(id uint) (*database.Team, error)
-	// GetTeamsFunc                  func() (*[]database.Team, error)
-	// BanByIdFunc                   func(id int) (*database.User, error)
-	// AcceptManagerRegistrationFunc func(id int) (*database.User, error)
-}
+type MockAdminController struct{}
 
 func (s *MockAdminController) GetAdmins() (*[]database.User, error) {
 	user := database.User{
