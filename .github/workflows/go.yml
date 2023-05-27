@@ -26,9 +26,9 @@ jobs:
 
     - name: Build
       run: go build -v ./...
-      
+
     - name: Run Tests
-        run: go test -v ./...
+      run: go test -v ./...
 
   golangci:
     name: lint
