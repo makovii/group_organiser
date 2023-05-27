@@ -32,7 +32,8 @@ jwt = "secret"
 [db]
 host = "localhost"
 port = 5432
-user = "perceval"
-password = "password"
-name = "group_organiser"
+user = "postgres"
+password = "postgres"
+name = "group_organiser_test"
 secure = false
+dbstring = "postgres://postgres:postgresql123@db.nefqglwoqprhqqonldik.supabase.co:6543/postgres"

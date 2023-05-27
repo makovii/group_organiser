@@ -23,7 +23,7 @@ secure = false
 domain = "localhost"
 base = "http://localhost:1234"
 host = "localhost"
-port = 8080
+port = 3001
 
 
 [secrets]
@@ -32,7 +32,8 @@ jwt = "secret"
 [db]
 host = "localhost"
 port = 5432
-user = "perceval"
-password = "password"
+user = "postgres"
+password = "postgres"
 name = "group_organiser"
 secure = false
+dbstring = "postgres://postgres:postgresql123@db.nefqglwoqprhqqonldik.supabase.co:6543/postgres"

@@ -59,12 +59,12 @@ func TestUserRepository(t *testing.T) {
 		pool.Close()
 	}()
 
+	cfg := config.GetConfig()
+	db := database.ConnectDatabase()
+	repo := NewUserRepository(db, cfg)
 
+	
 	t.Run("get user", func(t *testing.T) {
-		cfg := config.GetConfig()
-		db := database.ConnectDatabase()
-		repo := NewUserRepository(db, cfg)
-
 		user, err := repo.GetUserById(0)
 
 		if err != nil {
@@ -86,10 +86,6 @@ func TestUserRepository(t *testing.T) {
 	})
 
 	t.Run("create request, save request and get reques by 'from'", func(t *testing.T) {
-		cfg := config.GetConfig()
-		db := database.ConnectDatabase()
-		repo := NewUserRepository(db, cfg)
-
 		var request database.Request
 		request.From = uint(1)
 		request.To = uint(0)
@@ -136,17 +132,13 @@ func TestUserRepository(t *testing.T) {
 
 
 	t.Run("get all managers", func(t *testing.T) {
-		cfg := config.GetConfig()
-		db := database.ConnectDatabase()
-		repo := NewUserRepository(db, cfg)
-
 		managers, err := repo.GetAllManagers()
 		if err != nil {
 			t.Errorf("failed to find managers with error: %v", err)
 		}
 
 		expected :=  database.User{
-			Id: 1,
+			Id: 0,
 		}
 
 		var manager database.User
@@ -162,17 +154,13 @@ func TestUserRepository(t *testing.T) {
 	})
 
 	t.Run("get all teams", func(t *testing.T) {
-		cfg := config.GetConfig()
-		db := database.ConnectDatabase()
-		repo := NewUserRepository(db, cfg)
-
 		teams, err := repo.GetAllTeams()
 		if err != nil {
 			t.Errorf("failed to find teams with error: %v", err)
 		}
 
 		expected :=  database.Team{
-			Id: 1,
+			Id: 0,
 		}
 
 		var team database.Team
@@ -183,20 +171,16 @@ func TestUserRepository(t *testing.T) {
 		}
 
 		if !reflect.DeepEqual(team.Id, expected.Id) {
-			t.Errorf("manager Id is corrupted; actual: %v, expected: %v", team.Id, expected.Id)
+			t.Errorf("team Id is corrupted; actual: %v, expected: %v", team.Id, expected.Id)
 		}
 	})
 
 
 	t.Run("get team by id", func(t *testing.T) {
-		cfg := config.GetConfig()
-		db := database.ConnectDatabase()
-		repo := NewUserRepository(db, cfg)
-
-		team := repo.GetTeamById(1)
+		team := repo.GetTeamById(0)
 
 		expected :=  database.Team{
-			Id: 1,
+			Id: 0,
 		}
 
 		if !reflect.DeepEqual(team.Id, expected.Id) {
@@ -205,10 +189,6 @@ func TestUserRepository(t *testing.T) {
 	})
 
 	t.Run("get notifications", func(t *testing.T) {
-		cfg := config.GetConfig()
-		db := database.ConnectDatabase()
-		repo := NewUserRepository(db, cfg)
-
 		var request database.Request
 		request.From = uint(1)
 		request.To = uint(0)

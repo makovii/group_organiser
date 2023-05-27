@@ -15,6 +15,7 @@ func NewManagerRepository(db *gorm.DB) *ManagerRepository {
 
 func (mr *ManagerRepository) CreateTeam(name string, managerID uint) (*database.Team, error) {
 	var team database.Team
+	team.Name = name
 	team.ManagerID = managerID
 	result := mr.DB.Create(&team)
 	if result.Error != nil {
@@ -35,7 +36,7 @@ func (mr *ManagerRepository) GetAllTeams(managerID uint) (*[]database.Team, erro
 func (mr *ManagerRepository) GetTeam(teamID uint, managerID uint) (*database.Team, error) {
 	var team database.Team
 	if err := mr.DB.Where("id = ? AND manager_id = ?", teamID, managerID).First(&team).Error; err != nil {
-		return &team, err
+		return nil, err
 	}
 	return &team, nil
 }

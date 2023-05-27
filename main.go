@@ -32,7 +32,7 @@ func main() {
 			}
 	}
 
-	err = router.Run(fmt.Sprintf(":%d", portInt64))
+	err = router.Run(fmt.Sprintf("%s:%d", cfg.Server.Host, portInt64))
 	if err != nil {
 		fmt.Println("Smth wrong witn router.Run function: ", err)
 	}
