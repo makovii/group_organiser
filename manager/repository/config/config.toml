@@ -1,5 +1,5 @@
 [admin]
-admin_id = 0
+admin_id = 1
 
 [status]
 waitId = 1
@@ -36,3 +36,4 @@ user = "postgres"
 password = "root"
 name = "group_organiser"
 secure = false
+dbstring = "postgres://postgres:postgresql123@db.nefqglwoqprhqqonldik.supabase.co:6543/postgres"
