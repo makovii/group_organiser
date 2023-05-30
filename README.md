@@ -27,3 +27,22 @@ CRUD operations:
   - The administrator has the same capabilities as the manager
   - Administrator can view a list of all requests
 
+
+# Example request:
+1. Registration
+    link - https://group-organiser.herokuapp.com/auth/signUp 
+    body: {
+    "name": "player",
+    "email": "player45@gmail.com",
+    "password": "1234",
+    "role": 3
+  }
+
+2. Login
+    link- https://group-organiser.herokuapp.com/auth/signIn
+    body {
+    "email": "player45@gmail.com",
+    "password": "1234",
+    "role": 3
+  }
+

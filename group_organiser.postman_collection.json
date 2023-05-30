@@ -1,0 +1,736 @@
+{
+	"info": {
+		"_postman_id": "50cdf18e-d855-443e-8823-ca9884dbd619",
+		"name": "group_organiser",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18129094"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "signIn",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"player@gmail.com\",\n    \"password\": \"1234\",\n    \"role\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8080/auth/signIn",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"signIn"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "signUp",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"manager\",\n    \"email\": \"manager2@gmail.com\",\n    \"password\": \"1234\",\n    \"role\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8080/auth/signUp",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"signUp"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "getUser",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBsYXllckBnbWFpbC5jb20iLCJleHAiOjE2ODMyMzQ4MzIsImlkIjozLCJuYW1lIjoicGxheWVyIiwicm9sZSI6M30.R-gRJD15QBlL_T5grcREG-VdIylsnWPZDj3SFaqGZhs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/user/getUser?id=3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"getUser"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "myNotifications",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTY4MjYzMTQ2MiwiaWQiOjEsIm5hbWUiOiJhZG1pbiJ9.oKCPWVIcLHClqyfIX3Fx0ZPcebFEo-vXXrw-KlW3NsU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/user/myNotifications?to=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"myNotifications"
+							],
+							"query": [
+								{
+									"key": "to",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllTeams",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBsYXllckBnbWFpbC5jb20iLCJleHAiOjE2ODMyNDcyNTAsImlkIjozLCJuYW1lIjoicGxheWVyIiwicm9sZSI6M30.fP1E17ltFQB1fX31-2hYTjKvqTj3ObG_ksMN-MSok0M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/user/getAllTeams",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"getAllTeams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "joinTeam",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBsYXllckBnbWFpbC5jb20iLCJleHAiOjE2ODMyNDMzMzMsImlkIjozLCJuYW1lIjoicGxheWVyIiwicm9sZSI6M30.1drcjSTZtgpf9coMvuDn3kyzFMcWIdOn261ujtVrnQc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"teamId\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/user/joinTeam",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"joinTeam"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllManagers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBsYXllckBnbWFpbC5jb20iLCJleHAiOjE2ODI5MzU4MjUsImlkIjozLCJuYW1lIjoicGxheWVyIiwicm9sZSI6M30.T84QJRr7reqvi3JHRsoWr_HXs1wrFjQOFze3AxKnCDk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/user/getAllManagers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"getAllManagers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "leaveTeam",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBsYXllckBnbWFpbC5jb20iLCJleHAiOjE2ODMyNDMzMzMsImlkIjozLCJuYW1lIjoicGxheWVyIiwicm9sZSI6M30.1drcjSTZtgpf9coMvuDn3kyzFMcWIdOn261ujtVrnQc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"teamId\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/user/leaveTeam",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"leaveTeam"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cancelRequest",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBsYXllckBnbWFpbC5jb20iLCJleHAiOjE2ODMyNDMzMzMsImlkIjozLCJuYW1lIjoicGxheWVyIiwicm9sZSI6M30.1drcjSTZtgpf9coMvuDn3kyzFMcWIdOn261ujtVrnQc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/user/cancelRequest?id=140",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"cancelRequest"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "140"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "admin",
+			"item": [
+				{
+					"name": "acceptRegistration",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBsYXllckBnbWFpbC5jb20iLCJleHAiOjE2ODMzMDk4NjEsImlkIjoxLCJuYW1lIjoicGxheWVyIiwicm9sZSI6M30.3-uC7aEA3TE5HBrS-FsFHV26C58rzMOZuGREp5qbFfY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/admin/acceptRegistration?id=8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"acceptRegistration"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "8"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAdmins",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBsYXllckBnbWFpbC5jb20iLCJleHAiOjE2ODMwMzUxNzgsImlkIjoxLCJuYW1lIjoicGxheWVyIiwicm9sZSI6M30.aihKX-iovr-Aae-r2KJMTsDTc_h2BGBWJwdy4Qz8LzI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/getAdmins",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"getAdmins"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetUserById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBsYXllckBnbWFpbC5jb20iLCJleHAiOjE2ODMwMzUxNzgsImlkIjoxLCJuYW1lIjoicGxheWVyIiwicm9sZSI6M30.aihKX-iovr-Aae-r2KJMTsDTc_h2BGBWJwdy4Qz8LzI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/getUserById?id=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"getUserById"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTeamById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBsYXllckBnbWFpbC5jb20iLCJleHAiOjE2ODMwMzUxNzgsImlkIjoxLCJuYW1lIjoicGxheWVyIiwicm9sZSI6M30.aihKX-iovr-Aae-r2KJMTsDTc_h2BGBWJwdy4Qz8LzI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/getTeamById?id=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"getTeamById"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "banById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBsYXllckBnbWFpbC5jb20iLCJleHAiOjE2ODMwMzUxNzgsImlkIjoxLCJuYW1lIjoicGxheWVyIiwicm9sZSI6M30.aihKX-iovr-Aae-r2KJMTsDTc_h2BGBWJwdy4Qz8LzI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/banById?id=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"banById"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTeams",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBsYXllckBnbWFpbC5jb20iLCJleHAiOjE2ODMwMzUxNzgsImlkIjoxLCJuYW1lIjoicGxheWVyIiwicm9sZSI6M30.aihKX-iovr-Aae-r2KJMTsDTc_h2BGBWJwdy4Qz8LzI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/getTeams",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"getTeams"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "manager",
+			"item": [
+				{
+					"name": "createTeam",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"two\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8080/manager/createTeam",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8080",
+							"path": [
+								"manager",
+								"createTeam"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://0.0.0.0:8080/manager/getTeam",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://0.0.0.0:8080/manager/getTeam",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8080",
+							"path": [
+								"manager",
+								"getTeam"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://0.0.0.0:8080/manager/getTeam",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://0.0.0.0:8080/manager/updateTeam",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8080",
+							"path": [
+								"manager",
+								"updateTeam"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://0.0.0.0:8080/manager/getTeam",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://0.0.0.0:8080/manager/deleteTeam",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8080",
+							"path": [
+								"manager",
+								"deleteTeam"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://0.0.0.0:8080/manager/getTeam",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5pa2FAZ21haWwuY29tIiwiZXhwIjoxNjgyOTMyNjE3LCJpZCI6MSwibmFtZSI6Im5pa2EifQ.sFQl_17JHScJB39ib3IL5JklJtocwywUFg516yKhBvg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://0.0.0.0:8080/manager/getAllteams",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8080",
+							"path": [
+								"manager",
+								"getAllteams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://0.0.0.0:8080/manager/acceptUserRequest",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://0.0.0.0:8080/manager/acceptUserRequest",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8080",
+							"path": [
+								"manager",
+								"acceptUserRequest"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
